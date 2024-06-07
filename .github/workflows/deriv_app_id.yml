@@ -14,10 +14,10 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3  # Updated to the latest version
 
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4  # Updated to the latest version
         with:
           python-version: '3.x'
 
@@ -31,15 +31,15 @@ jobs:
           curl -X POST "https://api.deriv.com/app/register" \
           -H "Authorization: Bearer ${{ secrets.DERIV_API_TOKEN }}" \
           -H "Content-Type: application/json" \
-          -d '{"name": "My App", "scopes": ["read", "trade"], "github_url": "https://github.com/your-username/your-repo"}' \
+          -d '{"name": "My App", "scopes": ["read", "trade"], "github_url": "https://github.com/punch-ish/mybot"}' \
           -o response.json
           echo "Full Response:"
           cat response.json  # Print the full response for debugging
           APP_ID=$(cat response.json | jq -r '.app_id')
           echo "Generated App ID: $APP_ID"
         env:
-          MY_GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
           DERIV_API_TOKEN: ${{ secrets.DERIV_API_TOKEN }}
+          MY_GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
 
       - name: Output Response for Debugging
         run: cat response.json
