@@ -37,7 +37,7 @@ jobs:
           APP_ID=$(cat response.json | jq -r '.app_id')
           echo "Generated App ID: $APP_ID"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MY_GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
           DERIV_API_TOKEN: ${{ secrets.DERIV_API_TOKEN }}
 
       - name: Output Response for Debugging
