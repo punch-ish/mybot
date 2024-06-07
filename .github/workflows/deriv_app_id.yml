@@ -1,0 +1,44 @@
+name: Generate Deriv App ID
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  generate-app-id:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests
+
+      - name: Generate Deriv App ID
+        run: |
+          curl -X POST "https://api.deriv.com/app/register" \
+          -H "Authorization: Bearer ${{ secrets.DERIV_API_TOKEN }}" \
+          -H "Content-Type: application/json" \
+          -d '{"name": "My App", "scopes": ["read", "trade"], "github_url": "https://github.com/punch-ish/mybot"}' \
+          -o response.json
+          cat response.json
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DERIV_API_TOKEN: ${{ secrets.DERIV_API_TOKEN }}
+
+      - name: Output App ID
+        run: |
+          APP_ID=$(cat response.json | jq -r '.app_id')
+          echo "Generated App ID: $APP_ID"
