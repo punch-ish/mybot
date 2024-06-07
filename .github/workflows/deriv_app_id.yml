@@ -33,6 +33,7 @@ jobs:
           -H "Content-Type: application/json" \
           -d '{"name": "My App", "scopes": ["read", "trade"], "github_url": "https://github.com/your-username/your-repo"}' \
           -o response.json
+          echo "Full Response:"
           cat response.json  # Print the full response for debugging
           APP_ID=$(cat response.json | jq -r '.app_id')
           echo "Generated App ID: $APP_ID"
