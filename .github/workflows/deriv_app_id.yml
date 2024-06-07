@@ -24,21 +24,21 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install requests
+          pip install requests jq
 
       - name: Generate Deriv App ID
         run: |
           curl -X POST "https://api.deriv.com/app/register" \
           -H "Authorization: Bearer ${{ secrets.DERIV_API_TOKEN }}" \
           -H "Content-Type: application/json" \
-          -d '{"name": "My App", "scopes": ["read", "trade"], "github_url": "https://github.com/punch-ish/mybot"}' \
+          -d '{"name": "My App", "scopes": ["read", "trade"], "github_url": "https://github.com/your-username/your-repo"}' \
           -o response.json
-          cat response.json
+          cat response.json  # Print the full response for debugging
+          APP_ID=$(cat response.json | jq -r '.app_id')
+          echo "Generated App ID: $APP_ID"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DERIV_API_TOKEN: ${{ secrets.DERIV_API_TOKEN }}
 
-      - name: Output App ID
-        run: |
-          APP_ID=$(cat response.json | jq -r '.app_id')
-          echo "Generated App ID: $APP_ID"
+      - name: Output Response for Debugging
+        run: cat response.json
